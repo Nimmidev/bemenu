@@ -163,6 +163,12 @@ item_cb(const struct client *client, struct bm_item *item)
     }
 }
 
+static void
+item_highlight_callback(struct bm_menu *menu, struct bm_item *item){
+    const char *text = bm_item_get_text(item);
+    fprintf(stderr, "%s\n", text);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -184,6 +190,7 @@ main(int argc, char **argv)
         return EXIT_FAILURE;
 
     read_items_to_menu_from_path(menu);
+    bm_menu_set_item_highlight_callback(menu, item_highlight_callback);
     const enum bm_run_result status = run_menu(&client, menu, item_cb);
     bm_menu_free(menu);
     return (status == BM_RUN_RESULT_SELECTED ? EXIT_SUCCESS : EXIT_FAILURE);
