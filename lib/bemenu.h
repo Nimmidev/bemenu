@@ -893,6 +893,14 @@ BM_PUBLIC struct bm_item* bm_menu_get_highlighted_item(const struct bm_menu *men
 BM_PUBLIC bool bm_menu_set_selected_items(struct bm_menu *menu, struct bm_item **items, uint32_t nmemb);
 
 /**
+ * Set callback on item highlight.
+ *
+ * @param menu bm_menu instance where the callback will be set.
+ * @param callback function to call if item highlighted changes.
+ */
+BM_PUBLIC void bm_menu_set_item_highlight_callback(struct bm_menu *menu, void (*callback)(struct bm_menu *menu, struct bm_item *item));
+
+/**
  * Get selected items from bm_menu instance.
  *
  * @warning The pointer returned by this function may be invalid after selection or items change.

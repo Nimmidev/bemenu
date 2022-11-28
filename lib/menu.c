@@ -54,6 +54,7 @@ bm_menu_new(const char *renderer)
         return NULL;
 
     menu->dirty = true;
+    menu->item_highlight_callback = NULL;
 
     menu->key_binding = BM_KEY_BINDING_DEFAULT;
     menu->vim_mode = 'i';
@@ -636,15 +637,23 @@ bm_menu_set_highlighted_index(struct bm_menu *menu, uint32_t index)
     assert(menu);
 
     uint32_t count;
-    bm_menu_get_filtered_items(menu, &count);
+    struct bm_item **items = bm_menu_get_filtered_items(menu, &count);
 
     if (count <= index)
-        return 0;
+        return false;
 
     if (menu->index != index)
         menu->dirty = true;
 
-    return (menu->index = index);
+    if(items && index < count){
+        menu->index = index;
+        if(menu->item_highlight_callback != NULL){
+            menu->item_highlight_callback(menu, items[menu->index]);
+        }
+        return true;
+    }
+
+    return false;
 }
 
 bool
@@ -687,6 +696,11 @@ bm_menu_set_selected_items(struct bm_menu *menu, struct bm_item **items, uint32_
 
     memcpy(new_items, items, sizeof(struct bm_item*) * nmemb);
     return list_set_items_no_copy(&menu->selection, new_items, nmemb);
+}
+
+void 
+bm_menu_set_item_highlight_callback(struct bm_menu *menu, void (*callback)(struct bm_menu *menu, struct bm_item *item)){
+    menu->item_highlight_callback = callback;
 }
 
 void

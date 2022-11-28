@@ -422,6 +422,11 @@ struct bm_menu {
      */
     char vim_mode;
     uint32_t vim_last_key;
+
+    /**
+     * Callback on item highlight
+     * */
+    void (*item_highlight_callback)(struct bm_menu *menu ,struct bm_item *item);
 };
 
 /* library.c */
